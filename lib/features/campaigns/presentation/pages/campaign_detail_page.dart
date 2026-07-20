@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/di/service_locator.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_text_styles.dart';
 import '../../../../core/utils/formatters.dart';
 import '../../../../core/widgets/app_breakpoints.dart';
 import '../../../../core/widgets/app_card.dart';
@@ -83,9 +84,9 @@ class _Content extends StatelessWidget {
           _Header(campaign: campaign),
           const SizedBox(height: AppSpacing.lg),
           _MetricsGrid(campaign: campaign),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.section),
           const SectionHeader(title: 'CTR: history & 7-day forecast'),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
           AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,12 +107,12 @@ class _Content extends StatelessWidget {
             ),
           ],
           if (campaign.targetAudience != null) ...[
-            const SizedBox(height: AppSpacing.xl),
+            const SizedBox(height: AppSpacing.section),
             const SectionHeader(title: 'Target audience'),
-            const SizedBox(height: AppSpacing.md),
+            const SizedBox(height: AppSpacing.lg),
             _AudienceCard(campaign: campaign),
           ],
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.section),
           Text(
             'Forecast model: ${state.forecast?.horizonDays ?? 7}-day horizon',
             style: theme.textTheme.bodySmall
@@ -217,17 +218,20 @@ class _MetricBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return AppCard(
-      padding: const EdgeInsets.all(AppSpacing.md),
+      padding: const EdgeInsets.all(AppSpacing.lg),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            metric.value,
-            style: theme.textTheme.titleMedium
-                ?.copyWith(fontWeight: FontWeight.w700),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              metric.value,
+              style: AppTextStyles.metricValue(theme.textTheme),
+            ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 3),
           Text(
             metric.label,
             style: theme.textTheme.bodySmall

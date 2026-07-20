@@ -4,13 +4,13 @@ import '../theme/app_spacing.dart';
 
 /// Rounded surface container used throughout the app, optionally tappable.
 ///
-/// Adds a hairline border and a soft shadow in dark mode to give cards a
-/// subtle sense of depth and a premium, glassy feel.
+/// Relies on a lighter surface colour plus a soft, diffuse shadow for
+/// separation rather than a visible border, giving a calm, premium feel.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(AppSpacing.lg),
+    this.padding = const EdgeInsets.all(AppSpacing.cardPadding),
     this.onTap,
     this.color,
     this.border,
@@ -27,41 +27,46 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final surface = color ?? theme.cardTheme.color ?? theme.colorScheme.surface;
+    final radius = BorderRadius.circular(AppSpacing.radiusXl);
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        borderRadius: radius,
         boxShadow: isDark
             ? const [
                 BoxShadow(
-                  color: Color(0x33000000),
-                  blurRadius: 24,
-                  offset: Offset(0, 12),
+                  color: Color(0x4D000000),
+                  blurRadius: 32,
+                  spreadRadius: -8,
+                  offset: Offset(0, 16),
                 ),
               ]
             : const [
                 BoxShadow(
-                  color: Color(0x0F1B2A4A),
-                  blurRadius: 20,
-                  offset: Offset(0, 8),
+                  color: Color(0x141B2A4A),
+                  blurRadius: 28,
+                  spreadRadius: -6,
+                  offset: Offset(0, 12),
                 ),
               ],
       ),
       child: Material(
         color: surface,
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+        borderRadius: radius,
         clipBehavior: Clip.antiAlias,
         child: InkWell(
           onTap: onTap,
           child: Container(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-              border: border ??
-                  Border.all(
-                    color: theme.colorScheme.onSurface
-                        .withValues(alpha: isDark ? 0.07 : 0.05),
-                  ),
-            ),
+            // Only a whisper of a top highlight for definition; no hard border.
+            decoration: border == null
+                ? BoxDecoration(
+                    borderRadius: radius,
+                    border: Border.all(
+                      color: theme.colorScheme.onSurface
+                          .withValues(alpha: isDark ? 0.035 : 0.03),
+                    ),
+                  )
+                : BoxDecoration(borderRadius: radius, border: border),
             padding: padding,
             child: child,
           ),

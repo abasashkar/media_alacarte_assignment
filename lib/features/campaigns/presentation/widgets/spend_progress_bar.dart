@@ -61,32 +61,34 @@ class SpendProgressBar extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.md),
         LayoutBuilder(
           builder: (context, constraints) {
             return ClipRRect(
-              borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+              borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
               child: Stack(
                 children: [
                   Container(
-                    height: 9,
+                    height: 12,
                     width: double.infinity,
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.08),
+                    color: theme.colorScheme.onSurface.withValues(alpha: 0.07),
                   ),
                   TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: progress),
-                    duration: const Duration(milliseconds: 700),
+                    tween: Tween(begin: 0, end: progress.clamp(0, 1)),
+                    duration: const Duration(milliseconds: 800),
                     curve: Curves.easeOutCubic,
                     builder: (context, value, _) => Container(
-                      height: 9,
+                      height: 12,
                       width: constraints.maxWidth * value,
                       decoration: BoxDecoration(
                         gradient: AppColors.accentGradient,
-                        borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                        borderRadius:
+                            BorderRadius.circular(AppSpacing.radiusPill),
                         boxShadow: [
                           BoxShadow(
-                            color: AppColors.primary.withValues(alpha: 0.5),
-                            blurRadius: 8,
+                            color: AppColors.primary.withValues(alpha: 0.3),
+                            blurRadius: 10,
+                            offset: const Offset(0, 1),
                           ),
                         ],
                       ),

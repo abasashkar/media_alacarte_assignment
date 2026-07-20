@@ -8,6 +8,7 @@ import '../../../../core/widgets/app_breakpoints.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/empty_view.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/fade_in.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
 import '../../../../core/widgets/loading_view.dart';
 import '../../../../core/widgets/section_header.dart';
@@ -83,37 +84,50 @@ class _Content extends StatelessWidget {
       },
       child: ListView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(AppSpacing.lg),
+        padding: const EdgeInsets.fromLTRB(
+          AppSpacing.lg,
+          AppSpacing.sm,
+          AppSpacing.lg,
+          AppSpacing.xl,
+        ),
         children: [
-          KpiCard(
-            label: 'Total Spend',
-            value: Formatters.currency(summary.totalSpend),
-            caption:
-                'CTR ${Formatters.ctrFromFraction(summary.overallCtr)} · ${Formatters.compact(summary.totalClicks)} clicks',
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          const SectionHeader(title: 'Spend by channel'),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
-            child: ChannelDonutChart(
-              channels: summary.byChannel,
-              total: summary.channelTotal,
+          FadeIn(
+            child: KpiCard(
+              label: 'Total Spend',
+              value: Formatters.currency(summary.totalSpend),
+              caption:
+                  'CTR ${Formatters.ctrFromFraction(summary.overallCtr)} · ${Formatters.compact(summary.totalClicks)} clicks',
             ),
           ),
-          const SizedBox(height: AppSpacing.xl),
-          const SectionHeader(title: 'Top 3 campaigns by CTR'),
-          const SizedBox(height: AppSpacing.md),
-          AppCard(
-            child: TopCampaignsList(campaigns: summary.topCampaigns),
+          const SizedBox(height: AppSpacing.section),
+          const SectionHeader(title: 'Spend by channel'),
+          const SizedBox(height: AppSpacing.lg),
+          FadeIn(
+            delay: const Duration(milliseconds: 60),
+            child: AppCard(
+              child: ChannelDonutChart(
+                channels: summary.byChannel,
+                total: summary.channelTotal,
+              ),
+            ),
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.section),
+          const SectionHeader(title: 'Top 3 campaigns by CTR'),
+          const SizedBox(height: AppSpacing.lg),
+          FadeIn(
+            delay: const Duration(milliseconds: 120),
+            child: AppCard(
+              child: TopCampaignsList(campaigns: summary.topCampaigns),
+            ),
+          ),
+          const SizedBox(height: AppSpacing.section),
           const SectionHeader(title: 'Date range'),
-          const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.lg),
           RangeSelector(
             selected: state.range,
             onChanged: (range) => bloc.add(SpendRangeChanged(range)),
           ),
-          const SizedBox(height: AppSpacing.xl),
+          const SizedBox(height: AppSpacing.lg),
         ],
       ),
     );

@@ -49,11 +49,12 @@ class GradientScaffold extends StatelessWidget {
                   const _Glow(
                     alignment: Alignment(1.1, -1.0),
                     color: AppColors.glowTeal,
+                    opacity: 0.10,
                   ),
                   const _Glow(
                     alignment: Alignment(-1.2, -0.4),
                     color: AppColors.glowPurple,
-                    opacity: 0.10,
+                    opacity: 0.08,
                   ),
                   body,
                 ],

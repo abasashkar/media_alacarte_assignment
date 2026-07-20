@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../data/models/campaign_status.dart';
 
@@ -28,18 +29,18 @@ class CampaignFilterBar extends StatelessWidget {
             prefixIcon: Icon(Icons.search_rounded),
           ),
         ),
-        const SizedBox(height: AppSpacing.md),
+        const SizedBox(height: AppSpacing.lg),
         SizedBox(
-          height: 38,
+          height: 40,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: [
               _chip(context, label: 'All', value: null),
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.md),
               _chip(context, label: 'Active', value: CampaignStatus.active),
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.md),
               _chip(context, label: 'Paused', value: CampaignStatus.paused),
-              const SizedBox(width: AppSpacing.sm),
+              const SizedBox(width: AppSpacing.md),
               _chip(context, label: 'Ended', value: CampaignStatus.ended),
             ],
           ),
@@ -54,17 +55,34 @@ class CampaignFilterBar extends StatelessWidget {
     required CampaignStatus? value,
   }) {
     final selected = filter == value;
-    return ChoiceChip(
-      label: Text(label),
-      selected: selected,
-      showCheckmark: false,
-      labelStyle: TextStyle(
-        color: selected
-            ? Colors.white
-            : Theme.of(context).colorScheme.onSurface,
-        fontWeight: FontWeight.w600,
+    // A subtle lift so the active chip feels raised above the rest.
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 200),
+      curve: Curves.easeOut,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+        boxShadow: selected
+            ? [
+                BoxShadow(
+                  color: AppColors.primary.withValues(alpha: 0.35),
+                  blurRadius: 14,
+                  offset: const Offset(0, 4),
+                ),
+              ]
+            : null,
       ),
-      onSelected: (_) => onFilterChanged(value),
+      child: ChoiceChip(
+        label: Text(label),
+        selected: selected,
+        showCheckmark: false,
+        labelStyle: TextStyle(
+          color: selected
+              ? Colors.white
+              : Theme.of(context).colorScheme.onSurface,
+          fontWeight: FontWeight.w600,
+        ),
+        onSelected: (_) => onFilterChanged(value),
+      ),
     );
   }
 }

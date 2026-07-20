@@ -35,10 +35,11 @@ class AppColors {
   static const Color success = Color(0xFF27AE60); // active / positive
   static const Color neutral = Color(0xFF828282); // ended / muted
 
-  // Dark surfaces
-  static const Color darkBackground = Color(0xFF0A0B0D);
-  static const Color darkSurface = Color(0xFF16181D);
-  static const Color darkSurfaceVariant = Color(0xFF1E2127);
+  // Dark surfaces — surface is intentionally lighter than the background so
+  // cards read as clearly elevated without needing a visible border.
+  static const Color darkBackground = Color(0xFF090A0D);
+  static const Color darkSurface = Color(0xFF1B1E26);
+  static const Color darkSurfaceVariant = Color(0xFF24272F);
 
   // Light surfaces
   static const Color lightBackground = Color(0xFFF5F7FA);

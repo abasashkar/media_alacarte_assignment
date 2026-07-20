@@ -22,32 +22,14 @@ class AlertCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.lg),
+    final surface = theme.cardTheme.color ?? theme.colorScheme.surface;
+    final radius = BorderRadius.circular(AppSpacing.radiusXl);
+
+    return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.alphaBlend(
-              _color.withValues(alpha: 0.14),
-              theme.cardTheme.color ?? theme.colorScheme.surface,
-            ),
-            theme.cardTheme.color ?? theme.colorScheme.surface,
-          ],
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
-        border: Border(
-          left: BorderSide(color: _color, width: 4),
-          top: BorderSide(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
-          ),
-          right: BorderSide(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
-          ),
-          bottom: BorderSide(
-            color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
-          ),
+        borderRadius: radius,
+        border: Border.all(
+          color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
         ),
         boxShadow: const [
           BoxShadow(
@@ -57,9 +39,50 @@ class AlertCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: ClipRRect(
+        borderRadius: radius,
+        child: Stack(
+          children: [
+            // Left-tinted gradient fill (subtle, fades quickly to surface).
+            Positioned.fill(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Color.alphaBlend(
+                        _color.withValues(alpha: 0.08),
+                        surface,
+                      ),
+                      surface,
+                    ],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                    stops: const [0.0, 0.45],
+                  ),
+                ),
+              ),
+            ),
+            // Colored accent bar on the left edge.
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              child: Container(width: 4, color: _color),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(AppSpacing.lg),
+              child: _buildContent(context, theme),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildContent(BuildContext context, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
           Row(
             children: [
               Container(
@@ -83,20 +106,21 @@ class AlertCard extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: AppSpacing.sm,
-                        vertical: 2,
+                        horizontal: 8,
+                        vertical: 3,
                       ),
                       decoration: BoxDecoration(
-                        color: _color.withValues(alpha: 0.15),
+                        color: _color.withValues(alpha: 0.14),
                         borderRadius:
-                            BorderRadius.circular(AppSpacing.radiusSm),
+                            BorderRadius.circular(AppSpacing.radiusPill),
                       ),
                       child: Text(
-                        anomaly.type.label,
+                        anomaly.type.label.toUpperCase(),
                         style: TextStyle(
                           color: _color,
                           fontWeight: FontWeight.w700,
-                          fontSize: 11,
+                          fontSize: 10,
+                          letterSpacing: 0.4,
                         ),
                       ),
                     ),
@@ -116,7 +140,10 @@ class AlertCard extends StatelessWidget {
           const SizedBox(height: AppSpacing.md),
           Text(
             anomaly.message,
-            style: theme.textTheme.bodyMedium?.copyWith(height: 1.4),
+            style: theme.textTheme.bodyMedium?.copyWith(
+              height: 1.5,
+              color: theme.colorScheme.onSurface.withValues(alpha: 0.82),
+            ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Row(
@@ -145,8 +172,7 @@ class AlertCard extends StatelessWidget {
             ],
           ),
         ],
-      ),
-    );
+      );
   }
 }
 
@@ -170,11 +196,8 @@ class _StatBox extends StatelessWidget {
         horizontal: AppSpacing.sm,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface.withValues(alpha: 0.5),
+        color: theme.colorScheme.onSurface.withValues(alpha: 0.045),
         borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-        border: Border.all(
-          color: theme.colorScheme.onSurface.withValues(alpha: 0.06),
-        ),
       ),
       child: Column(
         children: [

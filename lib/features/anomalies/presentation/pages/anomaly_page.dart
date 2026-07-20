@@ -1,15 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/di/service_locator.dart';
+import '../../../../core/services/notification_service.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_breakpoints.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/empty_view.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/fade_in.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
 import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/widgets/section_header.dart';
 import '../bloc/anomaly_bloc.dart';
 import '../widgets/alert_card.dart';
 import '../widgets/live_indicator.dart';
@@ -33,23 +37,49 @@ class _AnomalyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GradientScaffold(
-      appBar: AppBar(title: const Text('Anomaly Alerts')),
+      appBar: AppBar(
+        title: const Text('Anomaly Alerts'),
+        actions: [
+          // Debug-only shortcut to verify the notification pipeline
+          // (permission, channel, plugin) independent of anomaly detection.
+          if (kDebugMode)
+            IconButton(
+              tooltip: 'Send test notification',
+              icon: const Icon(Icons.notification_add_outlined),
+              onPressed: () {
+                sl<NotificationService>().showAnomaly(
+                  id: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+                  title: 'Test notification',
+                  body: 'If you can see this, notifications are working.',
+                );
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Test notification sent.'),
+                    duration: Duration(seconds: 2),
+                  ),
+                );
+              },
+            ),
+        ],
+      ),
       body: SafeArea(
         child: ResponsiveCenter(
           child: BlocBuilder<AnomalyBloc, AnomalyState>(
             builder: (context, state) {
               return ListView(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.lg,
+                  AppSpacing.sm,
+                  AppSpacing.lg,
+                  AppSpacing.xl,
+                ),
                 children: [
-                  _MonitoringHeader(state: state),
-                  const SizedBox(height: AppSpacing.xl),
-                  Text(
-                    'Recent Anomalies',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                  const SizedBox(height: AppSpacing.md),
+                  FadeIn(child: _MonitoringHeader(state: state)),
+                  const SizedBox(height: AppSpacing.section),
+                  const SectionHeader(title: 'Recent Anomalies'),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildBody(context, state),
-                  const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.section),
                   _NotificationsToggle(state: state),
                   const SizedBox(height: AppSpacing.lg),
                 ],
@@ -89,12 +119,16 @@ class _AnomalyView extends StatelessWidget {
       );
     }
     return Column(
-      children: state.anomalies
-          .map((a) => Padding(
-                padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                child: AlertCard(anomaly: a),
-              ))
-          .toList(),
+      children: [
+        for (var i = 0; i < state.anomalies.length; i++)
+          Padding(
+            padding: const EdgeInsets.only(bottom: AppSpacing.lg),
+            child: FadeIn(
+              delay: Duration(milliseconds: 60 * i),
+              child: AlertCard(anomaly: state.anomalies[i]),
+            ),
+          ),
+      ],
     );
   }
 }

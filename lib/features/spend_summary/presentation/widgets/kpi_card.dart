@@ -22,15 +22,19 @@ class KpiCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppSpacing.xl),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.lg,
+      ),
       decoration: BoxDecoration(
         gradient: AppColors.accentGradient,
         borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
         boxShadow: [
           BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.35),
-            blurRadius: 28,
-            offset: const Offset(0, 14),
+            color: AppColors.primary.withValues(alpha: 0.3),
+            blurRadius: 24,
+            spreadRadius: -4,
+            offset: const Offset(0, 12),
           ),
         ],
       ),
@@ -42,7 +46,7 @@ class KpiCard extends StatelessWidget {
               color: Colors.white.withValues(alpha: 0.22),
               borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
             ),
-            child: Icon(icon, color: Colors.white, size: 26),
+            child: Icon(icon, color: Colors.white, size: 24),
           ),
           const SizedBox(width: AppSpacing.lg),
           Expanded(
@@ -53,27 +57,29 @@ class KpiCard extends StatelessWidget {
                   label,
                   style: const TextStyle(
                     color: Color(0xE6FFFFFF),
-                    fontSize: 13,
+                    fontSize: 12.5,
                     fontWeight: FontWeight.w600,
+                    letterSpacing: 0.2,
                   ),
                 ),
-                const SizedBox(height: AppSpacing.xs),
+                const SizedBox(height: 3),
                 Text(
                   value,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: FontWeight.w800,
                     letterSpacing: -0.5,
                   ),
                 ),
                 if (caption != null) ...[
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 3),
                   Text(
                     caption!,
                     style: const TextStyle(
                       color: Color(0xCCFFFFFF),
                       fontSize: 12,
+                      fontWeight: FontWeight.w500,
                     ),
                   ),
                 ],

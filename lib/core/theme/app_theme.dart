@@ -42,10 +42,11 @@ class AppTheme {
             .titleLarge
             ?.copyWith(
               color: colorScheme.onSurface,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              letterSpacing: -0.3,
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              letterSpacing: -0.6,
             ),
+        toolbarHeight: 64,
       ),
       cardTheme: CardThemeData(
         color: isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -60,32 +61,66 @@ class AppTheme {
             isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
         selectedColor: AppColors.primary,
         labelStyle: TextStyle(color: colorScheme.onSurface),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.sm,
+        ),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusXl),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
         ),
         side: BorderSide.none,
+        elevation: 0,
+        pressElevation: 0,
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor:
             isDark ? AppColors.darkSurfaceVariant : AppColors.lightSurfaceVariant,
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.lg,
+        ),
+        hintStyle: TextStyle(
+          color: colorScheme.onSurfaceVariant.withValues(alpha: 0.8),
+          fontWeight: FontWeight.w500,
+        ),
+        prefixIconColor: colorScheme.onSurfaceVariant,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
           borderSide: BorderSide.none,
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusLg),
+          borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
       ),
       navigationBarTheme: NavigationBarThemeData(
         backgroundColor:
             isDark ? AppColors.darkSurface : AppColors.lightSurface,
-        indicatorColor: AppColors.primary.withValues(alpha: 0.18),
+        height: 72,
+        elevation: 0,
+        indicatorColor: AppColors.primary.withValues(alpha: 0.16),
+        indicatorShape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+        ),
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
         labelTextStyle: WidgetStateProperty.resolveWith(
           (states) => TextStyle(
-            fontSize: 12,
+            fontSize: 11.5,
             fontWeight: FontWeight.w600,
+            letterSpacing: 0.1,
+            color: states.contains(WidgetState.selected)
+                ? AppColors.primary
+                : colorScheme.onSurfaceVariant,
+          ),
+        ),
+        iconTheme: WidgetStateProperty.resolveWith(
+          (states) => IconThemeData(
+            size: 24,
             color: states.contains(WidgetState.selected)
                 ? AppColors.primary
                 : colorScheme.onSurfaceVariant,

@@ -30,24 +30,25 @@ class ChannelDonutChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final safeTotal = total <= 0 ? 1 : total;
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         SizedBox(
-          width: 130,
-          height: 130,
+          width: 156,
+          height: 156,
           child: PieChart(
             PieChartData(
-              sectionsSpace: 2,
-              centerSpaceRadius: 38,
+              sectionsSpace: 3,
+              centerSpaceRadius: 46,
               sections: channels.map((c) {
                 final pct = (c.spend / safeTotal) * 100;
                 return PieChartSectionData(
                   value: c.spend.toDouble(),
                   color: colorFor(c.channel),
-                  radius: 18,
+                  radius: 22,
                   showTitle: pct >= 12,
                   title: '${pct.toStringAsFixed(0)}%',
                   titleStyle: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -56,9 +57,10 @@ class ChannelDonutChart extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(width: AppSpacing.xl),
+        const SizedBox(width: AppSpacing.xxl),
         Expanded(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: channels.map((c) {
               final pct = (c.spend / safeTotal) * 100;
               return Padding(
@@ -66,11 +68,11 @@ class ChannelDonutChart extends StatelessWidget {
                 child: Row(
                   children: [
                     Container(
-                      width: 12,
-                      height: 12,
+                      width: 10,
+                      height: 10,
                       decoration: BoxDecoration(
                         color: colorFor(c.channel),
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                     const SizedBox(width: AppSpacing.md),
@@ -78,6 +80,7 @@ class ChannelDonutChart extends StatelessWidget {
                       child: Text(
                         c.channel,
                         style: Theme.of(context).textTheme.bodyMedium,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                     Text(

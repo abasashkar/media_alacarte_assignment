@@ -79,23 +79,43 @@ class AnomalyBloc extends Bloc<AnomalyEvent, AnomalyState> {
   }
 
   Future<void> _notifyNewAnomalies(List<Anomaly> anomalies) async {
+    // Respect the in-app toggle, but keep tracking seen IDs so re-enabling
+    // notifications later doesn't replay the whole backlog.
     if (!state.notificationsEnabled) {
       _seenAnomalyIds.addAll(anomalies.map((a) => a.id));
       return;
     }
-    // On the very first successful load we prime the seen-set without notifying
-    // for every historical anomaly.
+    if (anomalies.isEmpty) return;
+
     final firstLoad = _seenAnomalyIds.isEmpty && state.anomalies.isEmpty;
+
+    if (firstLoad) {
+      // Prime the seen-set with everything so we don't spam a notification for
+      // each historical anomaly, but still surface the single most recent one
+      // so the user gets an alert even when the API returns a static payload.
+      _seenAnomalyIds.addAll(anomalies.map((a) => a.id));
+      final mostRecent = anomalies.reduce(
+        (a, b) => a.detectedAt.isAfter(b.detectedAt) ? a : b,
+      );
+      await _showAnomalyNotification(mostRecent);
+      return;
+    }
+
+    // On subsequent polls, notify for every genuinely new anomaly ID.
     for (final anomaly in anomalies) {
       final isNew = _seenAnomalyIds.add(anomaly.id);
-      if (isNew && !firstLoad) {
-        await _notifications.showAnomaly(
-          id: anomaly.id.hashCode,
-          title: '${anomaly.type.label}: ${anomaly.campaignName}',
-          body: anomaly.message,
-        );
+      if (isNew) {
+        await _showAnomalyNotification(anomaly);
       }
     }
+  }
+
+  Future<void> _showAnomalyNotification(Anomaly anomaly) {
+    return _notifications.showAnomaly(
+      id: anomaly.id.hashCode,
+      title: '${anomaly.type.label}: ${anomaly.campaignName}',
+      body: anomaly.message,
+    );
   }
 
   void _onNotificationsToggled(

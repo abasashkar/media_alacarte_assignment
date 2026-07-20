@@ -8,8 +8,9 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_breakpoints.dart';
 import '../../../../core/widgets/empty_view.dart';
 import '../../../../core/widgets/error_view.dart';
+import '../../../../core/widgets/fade_in.dart';
 import '../../../../core/widgets/gradient_scaffold.dart';
-import '../../../../core/widgets/loading_view.dart';
+import '../../../../core/widgets/skeleton_loader.dart';
 import '../bloc/campaign_list/campaign_list_bloc.dart';
 import '../widgets/campaign_card.dart';
 import '../widgets/campaign_filter_bar.dart';
@@ -74,7 +75,7 @@ class _CampaignListView extends StatelessWidget {
     switch (state.status) {
       case CampaignListStatus.initial:
       case CampaignListStatus.loading:
-        return const LoadingView(message: 'Loading campaigns...');
+        return const CampaignListSkeleton();
       case CampaignListStatus.failure:
         return ErrorView(
           message: state.errorMessage ?? 'Could not load campaigns.',
@@ -96,25 +97,27 @@ class _CampaignListView extends StatelessWidget {
               (s) => s.status != CampaignListStatus.loading,
             );
           },
-          child: ListView.separated(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              0,
-              AppSpacing.lg,
-              AppSpacing.xl,
+          child: FadeIn(
+            child: ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.lg,
+                AppSpacing.xs,
+                AppSpacing.lg,
+                AppSpacing.xl,
+              ),
+              itemCount: campaigns.length,
+              separatorBuilder: (_, __) =>
+                  const SizedBox(height: AppSpacing.lg),
+              itemBuilder: (context, index) {
+                final campaign = campaigns[index];
+                return CampaignCard(
+                  campaign: campaign,
+                  onTap: () =>
+                      context.push(AppRoutes.campaignDetailPath(campaign.id)),
+                );
+              },
             ),
-            itemCount: campaigns.length,
-            separatorBuilder: (_, __) =>
-                const SizedBox(height: AppSpacing.md),
-            itemBuilder: (context, index) {
-              final campaign = campaigns[index];
-              return CampaignCard(
-                campaign: campaign,
-                onTap: () =>
-                    context.push(AppRoutes.campaignDetailPath(campaign.id)),
-              );
-            },
           ),
         );
     }
