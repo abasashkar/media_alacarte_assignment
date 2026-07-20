@@ -55,7 +55,7 @@ class MainShell extends StatelessWidget {
             NavigationDestination(
               icon: Icon(Icons.bar_chart_outlined),
               selectedIcon: Icon(Icons.bar_chart_rounded),
-              label: 'Spend Summary',
+              label: 'Summary',
             ),
             NavigationDestination(
               icon: Icon(Icons.notifications_outlined),
